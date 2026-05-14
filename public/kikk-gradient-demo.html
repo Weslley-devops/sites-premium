@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KIKK Concentric Gradient Cursor Demo</title>
+  <style>
+    /* 1. Base e Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      /* Fundo claro para contrastar bem com o blend mode difference */
+      background-color: #FCFCFC; 
+      color: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      cursor: none; /* Oculta cursor padrão */
+    }
+
+    /* 2. O Cursor de Gradiente Concêntrico (Imagem 23) */
+    #cursor-gradient {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 24px; /* Discreto, pequeno e elegante */
+      height: 24px;
+      border-radius: 50%;
+      pointer-events: none; /* Impede que bloqueie cliques */
+      z-index: 9999;
+      
+      /* Inversão Dinâmica de Cores */
+      mix-blend-mode: difference;
+      
+      /* O Gradiente Concêntrico de Alta Vibração */
+      background: radial-gradient(
+        circle at center, 
+        #E6E6FA 10%, /* Núcleo Lavanda Pálido */
+        #FFB347 40%, /* Anel Laranja */
+        #FFD700 65%, /* Anel Amarelo */
+        #2A0066 100% /* Borda Azul-Púrpura Profunda */
+      );
+      
+      /* Transição suave do background e do scale durante hover */
+      transition: background 0.4s ease, width 0.4s ease, height 0.4s ease;
+      
+      /* Otimização de GPU */
+      will-change: transform, background, width, height;
+      transform: translate3d(-50%, -50%, 0) scale(1);
+    }
+
+    /* Estado Hover Magnético: Expansão do núcleo lavanda e tom pastel */
+    #cursor-gradient.hover-active {
+      width: 36px; /* Expansão muito suave e controlada */
+      height: 36px;
+      background: radial-gradient(
+        circle at center, 
+        #FFFFFF 30%, /* Núcleo expandido, ainda mais pálido (Lavanda/Branco) */
+        #FFB347 60%, 
+        #FFD700 80%, 
+        #2A0066 100%
+      );
+    }
+
+    /* 3. Elementos de Demonstração (Para Testar Magnetismo e Blend Mode) */
+    .demo-container {
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 800px;
+      padding: 2rem;
+    }
+
+    .huge-title {
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      color: #1a1a1a;
+      margin-bottom: 2rem;
+      /* Background preto com texto branco para forçar o Mix Blend Mode a mostrar diferença extrema */
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+    }
+
+    .dark-box {
+      background-color: #1a1a1a;
+      color: #FCFCFC;
+      padding: 4rem;
+      border-radius: 24px;
+      margin-bottom: 3rem;
+    }
+
+    /* Botões Magnéticos para Interação */
+    .btn-group {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .magnetic-btn {
+      position: relative;
+      padding: 1.5rem 3rem;
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background: transparent;
+      color: #1a1a1a;
+      border: 1px solid #1a1a1a;
+      border-radius: 100px;
+      cursor: none; /* Mantém o cursor invisível mesmo no hover */
+      outline: none;
+      transition: color 0.3s ease;
+    }
+    
+    .magnetic-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #1a1a1a;
+      border-radius: 100px;
+      z-index: -1;
+      transform: scale(0);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .magnetic-btn:hover {
+      color: #FCFCFC;
+    }
+
+    .magnetic-btn:hover::before {
+      transform: scale(1);
+    }
+
+    /* 4. Tratamento de Mobile */
+    @media (pointer: coarse) {
+      body, .magnetic-btn {
+        cursor: auto !important;
+      }
+      #cursor-gradient {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-container">
+    <div class="dark-box">
+      <h1 class="huge-title">Gradient<br>Singularity</h1>
+      <p style="opacity: 0.7;">Passe o cursor sobre as letras para ver o mix-blend-mode difference atuar sob o gradiente concêntrico.</p>
+    </div>
+
+    <div class="btn-group">
+      <button class="magnetic-btn" data-magnetic>Awwwards</button>
+      <button class="magnetic-btn" data-magnetic>Experience</button>
+    </div>
+  </div>
+
+  <div id="cursor-gradient"></div>
+
+  <script>
+    // 1. Verificação Mobile (Fallback)
+    const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+
+    if (!isTouchDevice) {
+      const cursorEl = document.getElementById('cursor-gradient');
+      
+      // Coordenadas RAW do Rato (Mouse)
+      const mouse = { x: -100, y: -100 };
+      // Coordenadas Renderizadas do Cursor (Spring/Lerp)
+      const cursor = { x: -100, y: -100 };
+      
+      // Estado Magnético
+      let hoverTarget = null;
+      let isHovering = false;
+
+      // 2. Atualizar a Posição Raw do Rato
+      window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      });
+
+      // 3. Capturar Elementos Magnéticos
+      const magneticElements = document.querySelectorAll('[data-magnetic]');
+      
+      magneticElements.forEach((el) => {
+        el.addEventListener('mouseenter', (e) => {
+          isHovering = true;
+          hoverTarget = el;
+          cursorEl.classList.add('hover-active');
+        });
+
+        el.addEventListener('mouseleave', () => {
+          isHovering = false;
+          hoverTarget = null;
+          cursorEl.classList.remove('hover-active');
+          // Reset parallax on button
+          el.style.transform = 'translate3d(0px, 0px, 0)';
+        });
+      });
+
+      // Função de Interpolação Linear (LERP)
+      const lerp = (start, end, factor) => {
+        return start + (end - start) * factor;
+      };
+
+      // 4. Render Engine (60fps) com Alto Amortecimento
+      const render = () => {
+        // Ignorar se o rato ainda não entrou na página
+        if (mouse.x === -100) {
+          requestAnimationFrame(render);
+          return;
+        }
+
+        let targetX = mouse.x;
+        let targetY = mouse.y;
+
+        // Lógica Magnética: "Grudar" no botão de forma orgânica
+        if (isHovering && hoverTarget) {
+          const rect = hoverTarget.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          
+          // Calcular a distância do rato ao centro do botão
+          const distX = mouse.x - centerX;
+          const distY = mouse.y - centerY;
+          
+          // O Cursor sente uma gravidade para o centro, 
+          // mas ainda pode mover-se ligeiramente dentro dele (parallax)
+          targetX = centerX + (distX * 0.15);
+          targetY = centerY + (distY * 0.15);
+
+          // Bónus: O próprio botão é atraído pelo rato (Micro-interação)
+          hoverTarget.style.transform = `translate3d(${distX * 0.2}px, ${distY * 0.2}px, 0)`;
+        }
+
+        // LERP com Amortecimento Alto (Damping). 
+        // Factor 0.45 garante uma cola sofisticada sem lag arrastado.
+        cursor.x = lerp(cursor.x, targetX, 0.45);
+        cursor.y = lerp(cursor.y, targetY, 0.45);
+
+        // Aplicação física via GPU
+        cursorEl.style.transform = `translate3d(${cursor.x}px, ${cursor.y}px, 0) translate(-50%, -50%)`;
+
+        requestAnimationFrame(render);
+      };
+
+      // Se o utilizador sair da janela com o rato
+      document.body.addEventListener('mouseleave', () => {
+        cursorEl.style.opacity = '0';
+      });
+      document.body.addEventListener('mouseenter', () => {
+        cursorEl.style.opacity = '1';
+      });
+
+      // Iniciar Física
+      requestAnimationFrame(render);
+    }
+  </script>
+</body>
+</html>
