@@ -31,7 +31,7 @@ export default function Hero() {
       </Suspense>
 
       {/* Content overlay */}
-      <div className="relative z-10 container-main text-center max-w-6xl mx-auto">
+      <div className="relative z-10 container-main text-center max-w-6xl mx-auto pointer-events-none">
         {/* Label */}
         <Reveal delay={0.2}>
           <p className="label mb-8 text-accent">Agência de sites premium</p>
@@ -58,7 +58,7 @@ export default function Hero() {
 
         {/* CTAs */}
         <Reveal delay={1.5}>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pointer-events-auto">
             <MagneticButton href={WHATSAPP_URL} variant="primary" size="lg" cursorText="Falar">
               Quero meu site
             </MagneticButton>

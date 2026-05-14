@@ -11,7 +11,7 @@ const WhatsAppFloat = dynamic(() => import("@/app/components/ui/WhatsAppFloat"),
 const Hero = dynamic(() => import("@/app/components/sections/Hero"));
 const Manifesto = dynamic(() => import("@/app/components/sections/Manifesto"));
 const Services = dynamic(() => import("@/app/components/sections/Services"));
-const Cases = dynamic(() => import("@/app/components/sections/Cases"));
+
 const Stats = dynamic(() => import("@/app/components/sections/Stats"));
 const Marquee = dynamic(() => import("@/app/components/ui/Marquee"));
 const Testimonials = dynamic(() => import("@/app/components/sections/Testimonials"));
@@ -28,7 +28,7 @@ export default function ClientShell() {
         <Hero />
         <Manifesto />
         <Services />
-        <Cases />
+
         <Stats />
         <Marquee scrollReactive>Sites Premium · Desenvolvimento Web · Landing Pages · E-commerce · Performance</Marquee>
         <Testimonials />

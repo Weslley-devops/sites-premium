@@ -8,21 +8,22 @@
 
 @theme {
   /* ── Core palette ── */
-  --color-bg: #050505;
-  --color-surface: #0a0a0a;
-  --color-surface-alt: #111111;
-  --color-border: rgba(255, 255, 255, 0.06);
-  --color-border-hover: rgba(255, 255, 255, 0.12);
+  --color-bg: #FCFCFC;
+  --color-surface: #F2F2F2;
+  --color-surface-alt: #E8E8E8;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-hover: rgba(0, 0, 0, 0.15);
 
   /* ── Text ── */
-  --color-text: #F5F5F0;
+  --color-text: #1A1A1A;
   --color-text-muted: #666666;
-  --color-text-dim: #444444;
+  --color-text-dim: #A3A3A3;
 
-  /* ── Accent: Acid Lime ── */
-  --color-accent: #CDFF50;
-  --color-accent-dim: rgba(205, 255, 80, 0.15);
-  --color-accent-glow: rgba(205, 255, 80, 0.3);
+  /* ── Accent: Sage Green & Sky Blue ── */
+  --color-accent: #7BA082; /* Sage Green */
+  --color-accent-dim: rgba(123, 160, 130, 0.15);
+  --color-accent-glow: rgba(123, 160, 130, 0.3);
+  --color-sky: #A3CEF1; /* Sky Blue */
 
   /* ── Social ── */
   --color-whatsapp: #25D366;
@@ -77,7 +78,7 @@ body {
 
 ::selection {
   background-color: var(--color-accent);
-  color: #050505;
+  color: #FCFCFC;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -172,7 +173,7 @@ body {
 
 .accent-bg {
   background-color: var(--color-accent);
-  color: #050505;
+  color: #FCFCFC;
 }
 
 /* ═══════════════════════════════════════════════════════
