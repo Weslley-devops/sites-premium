@@ -57,7 +57,6 @@ export default function CTAScene() {
 
         <PresentationControls
           global
-          config={{ mass: 2, tension: 500 }}
           rotation={[0, 0, 0]}
           polar={[-Math.PI / 4, Math.PI / 4]}
           azimuth={[-Math.PI / 4, Math.PI / 4]}
