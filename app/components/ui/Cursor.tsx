@@ -4,67 +4,48 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue } from "framer-motion";
 
 /**
- * Custom Ribbon Trail Cursor — KIKK Festival Style.
- * High performance canvas physics + blend modes.
+ * Concentric Gradient Cursor — "Gradient Singularity"
+ * High precision LERP physics, mix-blend-mode: difference, no trails.
  * Desktop only (hidden on touch/mobile).
  */
 export default function Cursor() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const [isHovering, setIsHovering] = useState(false);
   const [cursorText, setCursorText] = useState("");
   
-  // Ref tracking raw mouse coordinates for Canvas 60fps loop
-  const mouseRef = useRef({ x: -100, y: -100, isHovering: false });
-  
-  // Motion values for the label (so it updates without React re-renders)
+  // Motion values for the label tracking (avoids React re-renders for mouse movement)
   const labelX = useMotionValue(-100);
   const labelY = useMotionValue(-100);
+
+  // Raw mouse coordinates & state tracking for the 60fps loop
+  const mouseRef = useRef({ x: -100, y: -100, isHovering: false, hoverTarget: null as HTMLElement | null });
+  // Interpolated cursor coordinates
+  const cursorState = useRef({ x: -100, y: -100 });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (window.matchMedia("(max-width: 1024px)").matches) return;
     if ("ontouchstart" in window) return;
 
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const cursorEl = cursorRef.current;
+    if (!cursorEl) return;
 
-    let width = window.innerWidth;
-    let height = window.innerHeight;
     let animationFrameId: number;
-
-    const numPoints = 40;
-    const points = Array.from({ length: numPoints }, () => ({ x: -100, y: -100, vx: 0, vy: 0 }));
-
-    const colors = {
-      sage: { r: 123, g: 160, b: 130 }, // #7BA082
-      sky: { r: 163, g: 206, b: 241 }   // #A3CEF1
-    };
-
-    const resize = () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      ctx.scale(dpr, dpr);
-    };
-
-    window.addEventListener("resize", resize);
-    resize();
 
     const handleMove = (e: MouseEvent) => {
       mouseRef.current.x = e.clientX;
       mouseRef.current.y = e.clientY;
       labelX.set(e.clientX);
-      labelY.set(e.clientY - 30); // offset the label slightly above the mouse
+      labelY.set(e.clientY - 40); // text floats slightly above the gradient
     };
 
     const handleOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const interactive = target.closest("a, button, [data-cursor]");
       if (interactive) {
+        setIsHovering(true);
         mouseRef.current.isHovering = true;
+        mouseRef.current.hoverTarget = interactive as HTMLElement;
         const text = interactive.getAttribute("data-cursor") || "";
         setCursorText(text);
       }
@@ -74,8 +55,11 @@ export default function Cursor() {
       const target = e.target as HTMLElement;
       const interactive = target.closest("a, button, [data-cursor]");
       if (interactive) {
+        setIsHovering(false);
         mouseRef.current.isHovering = false;
+        mouseRef.current.hoverTarget = null;
         setCursorText("");
+        (interactive as HTMLElement).style.transform = 'translate3d(0px, 0px, 0)'; // reset any parallax
       }
     };
 
@@ -83,85 +67,89 @@ export default function Cursor() {
     document.addEventListener("mouseover", handleOver);
     document.addEventListener("mouseout", handleOut);
 
+    const lerp = (start: number, end: number, factor: number) => {
+      return start + (end - start) * factor;
+    };
+
     const render = () => {
-      ctx.clearRect(0, 0, width, height);
-
-      if (mouseRef.current.x !== -100) {
-        points[0].x = mouseRef.current.x;
-        points[0].y = mouseRef.current.y;
-
-        for (let i = 1; i < numPoints; i++) {
-          const pt = points[i];
-          const prevPt = points[i - 1];
-          const dx = prevPt.x - pt.x;
-          const dy = prevPt.y - pt.y;
-          
-          pt.vx += dx * 0.45;
-          pt.vy += dy * 0.45;
-          
-          pt.vx *= 0.55;
-          pt.vy *= 0.55;
-          
-          pt.x += pt.vx;
-          pt.y += pt.vy;
-        }
-
-        ctx.lineJoin = "round";
-        ctx.lineCap = "round";
-        ctx.globalCompositeOperation = "multiply";
-
-        // Thicker ribbon if hovering interactive element
-        const baseThickness = mouseRef.current.isHovering ? 60 : 45;
-
-        for (let i = 1; i < numPoints - 1; i++) {
-          const pt = points[i];
-          const nextPt = points[i + 1];
-          const prevPt = points[i - 1];
-          const xc = (pt.x + nextPt.x) / 2;
-          const yc = (pt.y + nextPt.y) / 2;
-          const life = 1 - i / numPoints;
-          const thickness = life * baseThickness;
-          
-          const r = Math.round(colors.sage.r + (colors.sky.r - colors.sage.r) * (1 - life));
-          const g = Math.round(colors.sage.g + (colors.sky.g - colors.sage.g) * (1 - life));
-          const b = Math.round(colors.sage.b + (colors.sky.b - colors.sage.b) * (1 - life));
-          const alpha = life * 0.7;
-
-          ctx.beginPath();
-          ctx.moveTo(prevPt.x, prevPt.y);
-          ctx.quadraticCurveTo(pt.x, pt.y, xc, yc);
-          ctx.lineWidth = Math.max(0.1, thickness);
-          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-          ctx.stroke();
-        }
+      if (mouseRef.current.x === -100) {
+        animationFrameId = requestAnimationFrame(render);
+        return;
       }
+
+      let targetX = mouseRef.current.x;
+      let targetY = mouseRef.current.y;
+
+      // Magnetic Hover Logic
+      if (mouseRef.current.isHovering && mouseRef.current.hoverTarget) {
+        const rect = mouseRef.current.hoverTarget.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        const distX = mouseRef.current.x - centerX;
+        const distY = mouseRef.current.y - centerY;
+        
+        // Snaps to center but allows a tiny amount of parallax drag inside the button
+        targetX = centerX + (distX * 0.15);
+        targetY = centerY + (distY * 0.15);
+
+        // Magnetic pull on the button itself
+        mouseRef.current.hoverTarget.style.transform = `translate3d(${distX * 0.2}px, ${distY * 0.2}px, 0)`;
+      }
+
+      // High Damping LERP (0.45) for sophisticated tracking without whip
+      cursorState.current.x = lerp(cursorState.current.x, targetX, 0.45);
+      cursorState.current.y = lerp(cursorState.current.y, targetY, 0.45);
+
+      // Apply transform via GPU
+      cursorEl.style.transform = `translate3d(${cursorState.current.x}px, ${cursorState.current.y}px, 0) translate(-50%, -50%)`;
 
       animationFrameId = requestAnimationFrame(render);
     };
 
     animationFrameId = requestAnimationFrame(render);
 
+    // Hide cursor when leaving window
+    const handleMouseLeave = () => (cursorEl.style.opacity = '0');
+    const handleMouseEnter = () => (cursorEl.style.opacity = '1');
+    document.body.addEventListener('mouseleave', handleMouseLeave);
+    document.body.addEventListener('mouseenter', handleMouseEnter);
+
     return () => {
-      window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", handleMove);
       document.removeEventListener("mouseover", handleOver);
       document.removeEventListener("mouseout", handleOut);
+      document.body.removeEventListener('mouseleave', handleMouseLeave);
+      document.body.removeEventListener('mouseenter', handleMouseEnter);
       cancelAnimationFrame(animationFrameId);
     };
   }, [labelX, labelY]);
 
+  // CSS variables for gradients to easily toggle them based on hover state
+  const baseGradient = "radial-gradient(circle at center, #E6E6FA 10%, #FFB347 40%, #FFD700 65%, #2A0066 100%)";
+  const hoverGradient = "radial-gradient(circle at center, #FFFFFF 30%, #FFB347 60%, #FFD700 80%, #2A0066 100%)";
+
   return (
     <>
-      <canvas
-        ref={canvasRef}
-        className="fixed top-0 left-0 w-screen h-screen pointer-events-none z-[9998] hidden lg:block"
+      <div
+        ref={cursorRef}
+        className="fixed top-0 left-0 pointer-events-none z-[9998] hidden lg:block transition-all duration-400 ease-out"
+        style={{
+          width: isHovering ? "36px" : "24px",
+          height: isHovering ? "36px" : "24px",
+          borderRadius: "50%",
+          mixBlendMode: "difference",
+          background: isHovering ? hoverGradient : baseGradient,
+          willChange: "transform, background, width, height",
+        }}
       />
+      
       {cursorText && (
         <motion.div
           className="fixed top-0 left-0 pointer-events-none z-[9999] hidden lg:flex items-center justify-center -translate-x-1/2 -translate-y-1/2"
           style={{ x: labelX, y: labelY }}
         >
-          <span className="text-[10px] uppercase tracking-[0.15em] text-bg font-bold bg-accent px-3 py-1.5 rounded-full shadow-lg">
+          <span className="text-[10px] uppercase tracking-[0.15em] text-bg font-bold bg-accent px-3 py-1.5 rounded-full shadow-lg mix-blend-normal">
             {cursorText}
           </span>
         </motion.div>
