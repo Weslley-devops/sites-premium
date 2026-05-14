@@ -3,6 +3,10 @@
 import Reveal from "@/app/components/ui/Reveal";
 import SplitText from "@/app/components/ui/SplitText";
 import MagneticButton from "@/app/components/ui/MagneticButton";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+
+const CTAScene = dynamic(() => import("@/app/components/webgl/CTAScene"), { ssr: false });
 
 const WHATSAPP_URL =
   "https://wa.me/5548988298667?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20quero%20um%20or%C3%A7amento";
@@ -10,10 +14,12 @@ const WHATSAPP_URL =
 export default function CTA() {
   return (
     <section id="cta" className="section-padding relative overflow-hidden">
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[150px]" />
-      </div>
-      <div className="container-main relative z-10 text-center max-w-4xl mx-auto">
+      {/* 3D Glassmorphism Background */}
+      <Suspense fallback={<div className="absolute inset-0 bg-transparent" />}>
+        <CTAScene />
+      </Suspense>
+
+      <div className="container-main relative z-10 text-center max-w-4xl mx-auto pointer-events-none">
         <Reveal><p className="label mb-6 text-accent">Próximo passo</p></Reveal>
         <SplitText as="h2" className="text-hero mb-8">Vamos criar algo incrível?</SplitText>
         <Reveal delay={0.5}>
@@ -22,7 +28,9 @@ export default function CTA() {
           </p>
         </Reveal>
         <Reveal delay={0.7}>
-          <MagneticButton href={WHATSAPP_URL} variant="primary" size="xl" cursorText="Falar">Quero meu site</MagneticButton>
+          <div className="pointer-events-auto flex justify-center">
+            <MagneticButton href={WHATSAPP_URL} variant="primary" size="xl" cursorText="Falar">Quero meu site</MagneticButton>
+          </div>
         </Reveal>
         <Reveal delay={0.9}>
           <div className="flex flex-wrap items-center justify-center gap-8 text-text-dim mt-12">
