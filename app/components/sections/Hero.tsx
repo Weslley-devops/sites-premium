@@ -48,7 +48,7 @@ export default function Hero() {
 
         {/* Subheadline */}
         <Reveal delay={1.2}>
-          <p className="text-text-muted max-w-xl mx-auto mb-12" style={{ fontSize: "var(--text-body)" }}>
+          <p className="text-text-muted max-w-xl mx-auto mb-12 text-[length:var(--text-body)]">
             Presença digital que trabalha{" "}
             <span className="text-text">24 horas por dia.</span>{" "}
             Rápidos, premium e feitos para{" "}
@@ -74,12 +74,9 @@ export default function Hero() {
         <Reveal delay={2}>
           <div className="flex flex-col items-center gap-2">
             <span className="label text-[10px]">Scroll</span>
-            <div className="w-px h-12 bg-gradient-to-b from-text/20 to-transparent relative overflow-hidden">
+            <div className="w-px h-12 bg-linear-to-b from-text/20 to-transparent relative overflow-hidden">
               <div
-                className="w-full h-4 bg-accent"
-                style={{
-                  animation: "scrollLine 2s ease-in-out infinite",
-                }}
+                className="w-full h-4 bg-accent animate-[scrollLine_2s_ease-in-out_infinite]"
               />
             </div>
           </div>

@@ -17,7 +17,7 @@ export default function CTA() {
         <Reveal><p className="label mb-6 text-accent">Próximo passo</p></Reveal>
         <SplitText as="h2" className="text-hero mb-8">Vamos criar algo incrível?</SplitText>
         <Reveal delay={0.5}>
-          <p className="text-text-muted max-w-lg mx-auto mb-12" style={{ fontSize: "var(--text-body)" }}>
+          <p className="text-text-muted max-w-lg mx-auto mb-12 text-[length:var(--text-body)]">
             Me conta sobre seu projeto. Sem compromisso. <span className="text-text">Você é dono 100% do código.</span>
           </p>
         </Reveal>

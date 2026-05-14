@@ -55,7 +55,7 @@ export default function Cases() {
             </SplitText>
           </div>
           <Reveal delay={0.3}>
-            <p className="text-text-muted max-w-sm" style={{ fontSize: "var(--text-body)" }}>
+            <p className="text-text-muted max-w-sm text-[length:var(--text-body)]">
               Cada projeto é uma oportunidade de criar algo que nunca existiu antes.
             </p>
           </Reveal>
@@ -81,29 +81,24 @@ export default function Cases() {
 function CaseCard({ project }: { project: typeof projects[0] }) {
   return (
     <motion.div
-      className="group relative rounded-2xl overflow-hidden aspect-[16/10]"
+      className="group relative rounded-2xl overflow-hidden aspect-16/10"
       data-cursor="Ver"
       whileHover="hover"
     >
       {/* Background gradient */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient}`} />
+      <div className={`absolute inset-0 bg-linear-to-br ${project.gradient}`} />
 
       {/* Dot pattern */}
       <div className="absolute inset-0 opacity-[0.03]">
         <div
-          className="w-full h-full"
-          style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.4) 1px, transparent 0)`,
-            backgroundSize: "32px 32px",
-          }}
+          className="w-full h-full bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.4)_1px,transparent_0)] bg-[size:32px_32px]"
         />
       </div>
 
       {/* Project name — gigante, centered */}
       <div className="absolute inset-0 flex items-center justify-center p-8">
         <motion.h3
-          className="text-[clamp(2rem,5vw,4rem)] font-bold text-text/10 text-center select-none"
-          style={{ WebkitTextStroke: "1px rgba(245,245,240,0.06)" }}
+          className="text-[clamp(2rem,5vw,4rem)] font-bold text-text/10 text-center select-none [-webkit-text-stroke:1px_rgba(245,245,240,0.06)]"
           variants={{
             hover: { scale: 1.05, opacity: 0.15 },
           }}
