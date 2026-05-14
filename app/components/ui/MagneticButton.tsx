@@ -79,7 +79,7 @@ export default function MagneticButton({
         data-cursor={cursorText}
         className={`
           inline-flex items-center justify-center gap-2.5
-          rounded-full uppercase tracking-[0.1em]
+          rounded-full uppercase tracking-widest
           transition-all duration-300 ease-out
           ${variants[variant]}
           ${sizes[size]}

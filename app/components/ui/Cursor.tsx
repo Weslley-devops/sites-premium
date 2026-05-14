@@ -71,30 +71,21 @@ export default function Cursor() {
       {/* Dot — instant follow */}
       <div
         ref={dotRef}
-        className="fixed top-0 left-0 z-[9999] pointer-events-none hidden lg:block"
-        style={{
-          width: 8,
-          height: 8,
-          background: isHovering ? "#CDFF50" : "#F5F5F0",
-          borderRadius: "50%",
-          transform: "translate(-50%, -50%)",
-          transition: "background 0.2s, width 0.3s, height 0.3s",
-          mixBlendMode: "difference",
-        }}
+        className={`fixed top-0 left-0 z-9999 pointer-events-none hidden lg:block w-2 h-2 rounded-full -translate-x-1/2 -translate-y-1/2 transition-all duration-300 mix-blend-difference ${
+          isHovering ? "bg-accent" : "bg-text"
+        }`}
       />
 
       {/* Ring — spring follow, scales on hover */}
       <motion.div
-        className="fixed top-0 left-0 z-[9998] pointer-events-none hidden lg:flex items-center justify-center"
+        className={`fixed top-0 left-0 z-9998 pointer-events-none hidden lg:flex items-center justify-center rounded-full -translate-x-1/2 -translate-y-1/2 transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          isHovering
+            ? "w-[80px] h-[80px] border border-accent/50"
+            : "w-[40px] h-[40px] border border-text/20"
+        }`}
         style={{
           x: ringX,
           y: ringY,
-          width: isHovering ? 80 : 40,
-          height: isHovering ? 80 : 40,
-          border: isHovering ? "1px solid rgba(205, 255, 80, 0.5)" : "1px solid rgba(245, 245, 240, 0.2)",
-          borderRadius: "50%",
-          transform: "translate(-50%, -50%)",
-          transition: "width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1), border 0.3s",
         }}
       >
         {cursorText && (

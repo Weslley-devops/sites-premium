@@ -80,8 +80,7 @@ export default function Marquee({
         {Array.from({ length: 4 }).map((_, i) => (
           <span
             key={i}
-            className="text-display text-text/5 font-extrabold uppercase px-8 select-none"
-            style={{ WebkitTextStroke: "1px rgba(245, 245, 240, 0.08)" }}
+            className="text-display text-text/5 font-extrabold uppercase px-8 select-none [-webkit-text-stroke:1px_rgba(245,245,240,0.08)]"
           >
             {text}
           </span>

@@ -55,7 +55,7 @@ export default function Cases() {
             </SplitText>
           </div>
           <Reveal delay={0.3}>
-            <p className="text-text-muted max-w-sm text-[length:var(--text-body)]">
+            <p className="text-text-muted max-w-sm text-(length:--text-body)">
               Cada projeto é uma oportunidade de criar algo que nunca existiu antes.
             </p>
           </Reveal>
@@ -91,7 +91,7 @@ function CaseCard({ project }: { project: typeof projects[0] }) {
       {/* Dot pattern */}
       <div className="absolute inset-0 opacity-[0.03]">
         <div
-          className="w-full h-full bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.4)_1px,transparent_0)] bg-[size:32px_32px]"
+          className="w-full h-full bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.4)_1px,transparent_0)] bg-[length:32px_32px]"
         />
       </div>
 

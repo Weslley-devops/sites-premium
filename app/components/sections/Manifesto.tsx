@@ -54,7 +54,7 @@ export default function Manifesto() {
       <div className="container-main max-w-5xl">
         <p className="text-heading leading-[1.2]">
           {words.map((word, i) => (
-            <span key={i} className="manifest-word inline-block mr-[0.3em]" style={{ opacity: 0.1 }}>
+            <span key={i} className="manifest-word inline-block mr-[0.3em] opacity-10">
               {/* Highlight key words in accent */}
               {["experiências", "clientes", "premium", "ignorar."].includes(word) ? (
                 <span className="accent">{word}</span>

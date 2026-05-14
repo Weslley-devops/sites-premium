@@ -33,7 +33,7 @@ export default function Footer() {
               </h2>
             </Reveal>
             <Reveal delay={0.2}>
-              <p className="text-text-muted max-w-sm text-[length:var(--text-body)]">
+              <p className="text-text-muted max-w-sm text-(length:--text-body)">
                 Sites profissionais que convertem visitantes em clientes. Rápidos, premium e feitos sob medida.
               </p>
             </Reveal>

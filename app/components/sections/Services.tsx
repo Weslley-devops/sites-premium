@@ -103,7 +103,7 @@ function ServiceItem({
         <div className="flex items-start gap-6 md:gap-12">
           {/* Number */}
           <span
-            className={`text-sm font-mono transition-colors duration-300 ${isActive ? "text-[#CDFF50]" : "text-[#444]"}`}
+            className={`text-sm font-mono transition-colors duration-300 ${isActive ? "text-accent" : "text-[#444]"}`}
           >
             {service.number}
           </span>
@@ -111,7 +111,7 @@ function ServiceItem({
           {/* Title + expandable content */}
           <div className="flex-1">
             <h3
-              className={`text-subheading transition-colors duration-300 ${isActive ? "text-[#F5F5F0]" : "text-[#666]"}`}
+              className={`text-subheading transition-colors duration-300 ${isActive ? "text-text" : "text-[#666]"}`}
             >
               {service.title}
             </h3>
@@ -125,7 +125,7 @@ function ServiceItem({
                   transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                   className="overflow-hidden"
                 >
-                  <p className="text-text-muted mt-4 max-w-lg text-[length:var(--text-body)]">
+                  <p className="text-text-muted mt-4 max-w-lg text-(length:--text-body)">
                     {service.description}
                   </p>
                   <div className="flex flex-wrap gap-2 mt-4">

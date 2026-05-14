@@ -63,7 +63,7 @@ export default function Reveal({
   }, { scope: ref });
 
   return (
-    <div ref={ref} className={className} style={{ opacity: 0 }}>
+    <div ref={ref} className={`${className} opacity-0`.trim()}>
       {children}
     </div>
   );

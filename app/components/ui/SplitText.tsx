@@ -75,7 +75,7 @@ export default function SplitText({
     <Tag ref={containerRef as React.RefObject<HTMLHeadingElement>} className={className}>
       {words.map((word, i) => (
         <span key={i} className="inline-block overflow-hidden mr-[0.25em]">
-          <span className="word-inner inline-block" style={{ opacity: 0, transform: "translateY(110%)" }}>
+          <span className="word-inner inline-block opacity-0 translate-y-[110%]">
             {word}
           </span>
         </span>

@@ -48,7 +48,7 @@ export default function Hero() {
 
         {/* Subheadline */}
         <Reveal delay={1.2}>
-          <p className="text-text-muted max-w-xl mx-auto mb-12 text-[length:var(--text-body)]">
+          <p className="text-text-muted max-w-xl mx-auto mb-12 text-(length:--text-body)">
             Presença digital que trabalha{" "}
             <span className="text-text">24 horas por dia.</span>{" "}
             Rápidos, premium e feitos para{" "}
