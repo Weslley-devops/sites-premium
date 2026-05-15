@@ -125,7 +125,7 @@ function ServiceItem({
                   transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                   className="overflow-hidden"
                 >
-                  <p className="text-text-muted mt-4 max-w-lg text-(length:--text-body)">
+                  <p className="text-text-muted mt-4 max-w-lg text-body">
                     {service.description}
                   </p>
                   <div className="flex flex-wrap gap-2 mt-4">

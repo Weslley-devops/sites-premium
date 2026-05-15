@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const geist = Geist({
@@ -49,7 +50,8 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={`${geist.variable} ${inter.variable}`}>
       <body className="antialiased">
-        <script
+        <Script
+          id="schema-org"
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
