@@ -134,6 +134,7 @@ export default function Cursor() {
       <div
         ref={cursorRef}
         className="fixed top-0 left-0 pointer-events-none z-9998 hidden lg:block transition-all duration-400 ease-out"
+        // eslint-disable-next-line react/forbid-dom-props
         style={{
           width: isHovering ? "36px" : "24px",
           height: isHovering ? "36px" : "24px",
@@ -147,6 +148,7 @@ export default function Cursor() {
       {cursorText && (
         <motion.div
           className="fixed top-0 left-0 pointer-events-none z-9999 hidden lg:flex items-center justify-center -translate-x-1/2 -translate-y-1/2"
+          // eslint-disable-next-line react/forbid-dom-props
           style={{ x: labelX, y: labelY }}
         >
           <span className="text-[10px] uppercase tracking-[0.15em] text-bg font-bold bg-accent px-3 py-1.5 rounded-full shadow-lg mix-blend-normal">
